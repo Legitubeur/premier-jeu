@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Jeu de Devinettes + Scores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .pseudo-section {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .pseudo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .pseudo-input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .pseudo-input-group button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .pseudo-input-group button:hover {
+            background: #764ba2;
+        }
+
+        .pseudo-display {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            text-align: center;
+        }
+
+        .info-text {
+            color: #333;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .message.indice {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .message.victoire {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .message.loading {
+            background: #e2e3e5;
+            color: #383d41;
+            border-left: 4px solid #6c757d;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #dee2e6;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .bouton-reset {
+            background: #28a745;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .bouton-reset:hover {
+            background: #218838;
+        }
+
+        .scores-section {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .scores-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .score-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .score-joueur {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .no-scores {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Jeu de Devinettes</h1>
+        <p class="subtitle">Avec sauvegarde des scores ! 🔥</p>
+
+        <div class="pseudo-section">
+            <label style="color: #666; font-weight: bold;">Ton pseudo :</label>
+            <div class="pseudo-input-group">
+                <input 
+                    type="text" 
+                    id="pseudoInput" 
+                    placeholder="Entre ton pseudo..."
+                    maxlength="20"
+                >
+                <button onclick="changerPseudo()">OK</button>
+            </div>
+            <div class="pseudo-display" id="pseudoAffiche">Pseudo : (pas défini)</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-text">Je pense à un nombre entre <strong>1 et 100</strong></div>
+            <div class="info-text">À toi de le deviner ! 🤔</div>
+        </div>
+
+        <div class="input-group">
+            <input 
+                type="number" 
+                id="monEntree" 
+                min="1" 
+                max="100" 
+                placeholder="Écris un nombre..."
+            >
+            <button onclick="verifierReponse()">Vérifier</button>
+        </div>
+
+        <div class="message" id="leMessage"></div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Tentatives :</span>
+                <span class="stat-value" id="compteur">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">État :</span>
+                <span class="stat-value" id="etat">En jeu...</span>
+            </div>
+        </div>
+
+        <button class="bouton-reset" onclick="recommencer()">🔄 Nouveau Jeu</button>
+
+        <div class="scores-section">
+            <div class="scores-title">🏆 Meilleurs Scores</div>
+            <div id="scoresContainer" class="loading">Chargement des scores...</div>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+
+    <script>
+        // ===== CONFIGURATION FIREBASE =====
+        // ⚠️ REMPLACE CECI PAR TA CONFIGURATION !
+        const firebaseConfig = {
+            apiKey: "REMPLACE_PAR_TA_API_KEY",
+            authDomain: "REMPLACE_PAR_TON_AUTH_DOMAIN",
+            projectId: "REMPLACE_PAR_TON_PROJECT_ID",
+            storageBucket: "REMPLACE_PAR_TON_STORAGE_BUCKET",
+            messagingSenderId: "REMPLACE_PAR_TON_MESSAGING_ID",
+            appId: "REMPLACE_PAR_TON_APP_ID"
+        };
+
+        // Initialiser Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+
+        // ===== LES VARIABLES =====
+        let nombreSecret;
+        let tentatives;
+        let jeuTermine;
+        let pseudoJoueur = localStorage.getItem("pseudoJoueur") || "Anonyme";
+
+        // ===== AFFICHER LE PSEUDO =====
+        function afficherPseudo() {
+            document.getElementById("pseudoAffiche").textContent = `Pseudo : ${pseudoJoueur}`;
+        }
+
+        // ===== CHANGER LE PSEUDO =====
+        function changerPseudo() {
+            const nouveau = document.getElementById("pseudoInput").value.trim();
+            if (nouveau && nouveau.length > 0) {
+                pseudoJoueur = nouveau;
+                localStorage.setItem("pseudoJoueur", pseudoJoueur);
+                afficherPseudo();
+                document.getElementById("pseudoInput").value = "";
+                chargerScores();
+            } else {
+                alert("Entre un pseudo valide !");
+            }
+        }
+
+        // ===== FONCTION DE DÉMARRAGE =====
+        function demarrer() {
+            nombreSecret = Math.floor(Math.random() * 100) + 1;
+            tentatives = 0;
+            jeuTermine = false;
+            
+            document.getElementById("leMessage").textContent = "";
+            document.getElementById("monEntree").value = "";
+            document.getElementById("etat").textContent = "En jeu...";
+            document.getElementById("compteur").textContent = "0";
+            document.getElementById("monEntree").focus();
+        }
+
+        // ===== VÉRIFIER LA RÉPONSE =====
+        function verifierReponse() {
+            if (jeuTermine) return;
+
+            let entree = document.getElementById("monEntree");
+            let nombre = parseInt(entree.value);
+
+            if (isNaN(nombre) || nombre < 1 || nombre > 100) {
+                afficherMessage("⚠️ Écris un nombre entre 1 et 100 !", "indice");
+                return;
+            }
+
+            tentatives++;
+            document.getElementById("compteur").textContent = tentatives;
+
+            if (nombre === nombreSecret) {
+                afficherMessage(
+                    `🎉 BRAVO ! Tu as trouvé ${nombreSecret} en ${tentatives} tentative(s) !`,
+                    "victoire"
+                );
+                document.getElementById("etat").textContent = "Gagné ! 🎉";
+                jeuTermine = true;
+                
+                // Sauvegarder le score dans Firebase
+                sauvegarderScore(tentatives);
+            } else if (nombre < nombreSecret) {
+                afficherMessage(`📈 Le nombre est PLUS GRAND que ${nombre}`, "indice");
+            } else {
+                afficherMessage(`📉 Le nombre est PLUS PETIT que ${nombre}`, "indice");
+            }
+
+            entree.value = "";
+            entree.focus();
+        }
+
+        // ===== SAUVEGARDER LE SCORE DANS FIREBASE =====
+        async function sauvegarderScore(score) {
+            try {
+                afficherMessage("💾 Sauvegarde en cours...", "loading");
+                
+                await db.collection("scores").add({
+                    joueur: pseudoJoueur,
+                    score: score,
+                    nombreSecret: nombreSecret,
+                    date: new Date(),
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                afficherMessage("✅ Score sauvegardé !", "victoire");
+                
+                // Recharger les scores
+                setTimeout(chargerScores, 500);
+            } catch (error) {
+                console.error("Erreur sauvegarde :", error);
+                afficherMessage("❌ Erreur sauvegarde", "indice");
+            }
+        }
+
+        // ===== CHARGER LES SCORES DEPUIS FIREBASE =====
+        async function chargerScores() {
+            try {
+                const snapshot = await db.collection("scores")
+                    .orderBy("score")
+                    .limit(10)
+                    .get();
+
+                const container = document.getElementById("scoresContainer");
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="no-scores">Aucun score pour l\'instant. À toi de jouer ! 🎮</div>';
+                    return;
+                }
+
+                let html = "";
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    html += `
+                        <div class="score-item">
+                            <span class="score-joueur">${index + 1}. ${data.joueur}</span>
+                            <span class="score-value">${data.score} tentatives</span>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error("Erreur chargement :", error);
+                document.getElementById("scoresContainer").innerHTML = 
+                    '<div class="no-scores">Erreur de connexion à Firebase</div>';
+            }
+        }
+
+        // ===== AFFICHER LES MESSAGES =====
+        function afficherMessage(texte, style) {
+            let messageElement = document.getElementById("leMessage");
+            messageElement.textContent = texte;
+            messageElement.className = "message " + style;
+        }
+
+        // ===== RECOMMENCER =====
+        function recommencer() {
+            demarrer();
+            chargerScores();
+        }
+
+        // ===== APPUYER SUR ENTRÉE =====
+        document.getElementById("monEntree").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                verifierReponse();
+            }
+        });
+
+        document.getElementById("pseudoInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                changerPseudo();
+            }
+        });
+
+        // ===== AU DÉMARRAGE =====
+        afficherPseudo();
+        demarrer();
+        chargerScores();
+    </script>
+</body>
+</html>
