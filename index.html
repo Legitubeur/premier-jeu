@@ -1,1023 +1,492 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 7.5.4.2 (Windows)"/>
-	<meta name="created" content="2026-09-22T16:44:44.304000000"/>
-	<meta name="changed" content="2026-09-22T16:55:11.432000000"/>
-	<style type="text/css">
-		@page { size: 21cm 29.7cm; margin: 2cm }
-		p { line-height: 115%; margin-bottom: 0.25cm; background: transparent }
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Jeu de Devinettes + Scores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .pseudo-section {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .pseudo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .pseudo-input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .pseudo-input-group button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .pseudo-input-group button:hover {
+            background: #764ba2;
+        }
+
+        .pseudo-display {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            text-align: center;
+        }
+
+        .info-text {
+            color: #333;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .message.indice {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .message.victoire {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .message.loading {
+            background: #e2e3e5;
+            color: #383d41;
+            border-left: 4px solid #6c757d;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #dee2e6;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .bouton-reset {
+            background: #28a745;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .bouton-reset:hover {
+            background: #218838;
+        }
+
+        .scores-section {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .scores-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .score-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .score-joueur {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .no-scores {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+    </style>
 </head>
-<body lang="fr-FR" link="#000080" vlink="#800000" dir="ltr"><p style="line-height: 100%; margin-bottom: 0cm">
-&lt;!DOCTYPE html&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">&lt;html lang=&quot;fr&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">&lt;head&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;meta
-charset=&quot;UTF-8&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;meta
-name=&quot;viewport&quot; content=&quot;width=device-width,
-initial-scale=1.0&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;title&gt;🎮
-Jeu de Devinettes + Scores&lt;/title&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;style&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        * {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            margin:
-0;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-0;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-box-sizing: border-box;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        body {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-family: 'Arial', sans-serif;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-min-height: 100vh;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            display:
-flex;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-justify-content: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-align-items: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .container {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: white;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-40px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-max-width: 600px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            width:
-100%;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        h1 {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#333;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 2.5em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-text-align: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .subtitle {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#666;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-text-align: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.pseudo-section {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #f0f4ff;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-left: 4px solid #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.pseudo-input-group {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            display:
-flex;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            gap:
-10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.pseudo-input-group input {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            flex: 1;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            border:
-2px solid #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 8px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.pseudo-input-group button {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-10px 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-white;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            border:
-none;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 8px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            cursor:
-pointer;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.pseudo-input-group button:hover {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #764ba2;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.pseudo-display {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#333;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .info-box {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #f0f4ff;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-left: 4px solid #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-text-align: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .info-text {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#333;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            margin:
-10px 0;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .input-group
-{</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            display:
-flex;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            gap:
-10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-input[type=&quot;number&quot;] {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            flex: 1;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-12px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            border:
-2px solid #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 8px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            outline:
-none;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        button {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-12px 30px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-white;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            border:
-none;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 8px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            cursor:
-pointer;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-transition: background 0.3s;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        button:hover
-{</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #764ba2;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-button:active {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-transform: scale(0.98);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .message {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-15px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 8px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-min-height: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.message.indice {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #fff3cd;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#856404;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-left: 4px solid #ffc107;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.message.victoire {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #d4edda;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#155724;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-left: 4px solid #28a745;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.message.loading {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #e2e3e5;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#383d41;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-left: 4px solid #6c757d;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .stats {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #f8f9fa;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-top: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            border:
-2px solid #dee2e6;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .stat-item {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            display:
-flex;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-justify-content: space-between;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-10px 0;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-bottom: 1px solid #dee2e6;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.stat-item:last-child {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-bottom: none;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .stat-label
-{</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#666;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .stat-value
-{</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.2em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.bouton-reset {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #28a745;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-top: 20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            width:
-100%;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.bouton-reset:hover {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #218838;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.scores-section {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-top: 30px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: #f8f9fa;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.scores-title {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.3em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#333;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 15px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .score-item
-{</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-background: white;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-12px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-margin-bottom: 10px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-radius: 8px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            display:
-flex;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-justify-content: space-between;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-align-items: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-border-left: 4px solid #667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-.score-joueur {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#333;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .score-value
-{</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#667eea;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-weight: bold;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-size: 1.1em;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .no-scores {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#999;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-font-style: italic;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-text-align: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            padding:
-20px;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        .loading {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-text-align: center;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            color:
-#666;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;/style&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">&lt;/head&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">&lt;body&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;div
-class=&quot;container&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;h1&gt;🎮
-Jeu de Devinettes&lt;/h1&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;p
-class=&quot;subtitle&quot;&gt;Avec sauvegarde des scores ! 🔥&lt;/p&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;div
-class=&quot;pseudo-section&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;label
-style=&quot;color: #666; font-weight: bold;&quot;&gt;Ton pseudo
-:&lt;/label&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;pseudo-input-group&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-&lt;input 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-type=&quot;text&quot; 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-id=&quot;pseudoInput&quot; 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-placeholder=&quot;Entre ton pseudo...&quot;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-maxlength=&quot;20&quot;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                &gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-&lt;button onclick=&quot;changerPseudo()&quot;&gt;OK&lt;/button&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;pseudo-display&quot; id=&quot;pseudoAffiche&quot;&gt;Pseudo
-: (pas défini)&lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;div
-class=&quot;info-box&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;info-text&quot;&gt;Je pense à un nombre entre &lt;strong&gt;1
-et 100&lt;/strong&gt;&lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;info-text&quot;&gt;À toi de le deviner ! 🤔&lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;div
-class=&quot;input-group&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;input
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-type=&quot;number&quot; 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-id=&quot;monEntree&quot; 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-min=&quot;1&quot; 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-max=&quot;100&quot; 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-placeholder=&quot;Écris un nombre...&quot;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;button
-onclick=&quot;verifierReponse()&quot;&gt;Vérifier&lt;/button&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;div
-class=&quot;message&quot; id=&quot;leMessage&quot;&gt;&lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;div
-class=&quot;stats&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;stat-item&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-&lt;span class=&quot;stat-label&quot;&gt;Tentatives :&lt;/span&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-&lt;span class=&quot;stat-value&quot; id=&quot;compteur&quot;&gt;0&lt;/span&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;stat-item&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-&lt;span class=&quot;stat-label&quot;&gt;État :&lt;/span&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-&lt;span class=&quot;stat-value&quot; id=&quot;etat&quot;&gt;En
-jeu...&lt;/span&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;button
-class=&quot;bouton-reset&quot; onclick=&quot;recommencer()&quot;&gt;🔄
-Nouveau Jeu&lt;/button&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;div
-class=&quot;scores-section&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-class=&quot;scores-title&quot;&gt;🏆 Meilleurs Scores&lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            &lt;div
-id=&quot;scoresContainer&quot; class=&quot;loading&quot;&gt;Chargement
-des scores...&lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;!-- FIREBASE
-SDK --&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;script
-src=&quot;https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js&quot;&gt;&lt;/script&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;script
-src=&quot;https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js&quot;&gt;&lt;/script&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;script&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">     // Import the
-functions you need from the SDKs you need</p>
-<p style="line-height: 100%; margin-bottom: 0cm">import {
-initializeApp } from &quot;firebase/app&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">import {
-getAnalytics } from &quot;firebase/analytics&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">// TODO: Add SDKs
-for Firebase products that you want to use</p>
-<p style="line-height: 100%; margin-bottom: 0cm">//
-https://firebase.google.com/docs/web/setup#available-libraries</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">// Your web app's
-Firebase configuration</p>
-<p style="line-height: 100%; margin-bottom: 0cm">// For Firebase JS
-SDK v7.20.0 and later, measurementId is optional</p>
-<p style="line-height: 100%; margin-bottom: 0cm">const firebaseConfig
-= {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  apiKey:
-&quot;AIzaSyBboj_-Vc9VVkzzuWpc8pNrRyP82ZYst1Y&quot;,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  authDomain:
-&quot;devinet-8b270.firebaseapp.com&quot;,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  projectId:
-&quot;devinet-8b270&quot;,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  storageBucket:
-&quot;devinet-8b270.firebasestorage.app&quot;,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  messagingSenderId:
-&quot;213768792856&quot;,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  appId:
-&quot;1:213768792856:web:5b570e34f4624aabaccc6d&quot;,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">  measurementId:
-&quot;G-QQ4D8XW131&quot;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">};</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">// Initialize
-Firebase</p>
-<p style="line-height: 100%; margin-bottom: 0cm">const app =
-initializeApp(firebaseConfig);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">const analytics =
-getAnalytics(app);</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        //
-Initialiser Firebase</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        const app =
-firebase.initializeApp(firebaseConfig);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        const db =
-firebase.firestore(app);</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // ===== LES
-VARIABLES =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        let
-nombreSecret;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        let
-tentatives;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        let
-jeuTermine;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        let
-pseudoJoueur = localStorage.getItem(&quot;pseudoJoueur&quot;) ||
-&quot;Anonyme&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-AFFICHER LE PSEUDO =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        function
-afficherPseudo() {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;pseudoAffiche&quot;).textContent =
-`Pseudo : ${pseudoJoueur}`;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-CHANGER LE PSEUDO =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        function
-changerPseudo() {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            const
-nouveau = document.getElementById(&quot;pseudoInput&quot;).value.trim();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            if
-(nouveau &amp;&amp; nouveau.length &gt; 0) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-pseudoJoueur = nouveau;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-localStorage.setItem(&quot;pseudoJoueur&quot;, pseudoJoueur);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherPseudo();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-document.getElementById(&quot;pseudoInput&quot;).value = &quot;&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-chargerScores();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            } else {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-alert(&quot;Entre un pseudo valide !&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-FONCTION DE DÉMARRAGE =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        function
-demarrer() {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-nombreSecret = Math.floor(Math.random() * 100) + 1;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-tentatives = 0;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-jeuTermine = false;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;leMessage&quot;).textContent = &quot;&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;monEntree&quot;).value = &quot;&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;etat&quot;).textContent = &quot;En
-jeu...&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;compteur&quot;).textContent = &quot;0&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;monEntree&quot;).focus();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-VÉRIFIER LA RÉPONSE =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        function
-verifierReponse() {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            if
-(jeuTermine) return;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            let
-entree = document.getElementById(&quot;monEntree&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            let
-nombre = parseInt(entree.value);</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            if
-(isNaN(nombre) || nombre &lt; 1 || nombre &gt; 100) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(&quot;⚠️ Écris un nombre entre 1 et 100 !&quot;,
-&quot;indice&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-return;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-tentatives++;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-document.getElementById(&quot;compteur&quot;).textContent =
-tentatives;</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            if
-(nombre === nombreSecret) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-`🎉 BRAVO ! Tu as trouvé ${nombreSecret} en ${tentatives}
-tentative(s) !`,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-&quot;victoire&quot;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                );</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-document.getElementById(&quot;etat&quot;).textContent = &quot;Gagné
-! 🎉&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-jeuTermine = true;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                //
-Sauvegarder le score dans Firebase</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-sauvegarderScore(tentatives);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            } else
-if (nombre &lt; nombreSecret) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(`📈 Le nombre est PLUS GRAND que ${nombre}`,
-&quot;indice&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            } else {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(`📉 Le nombre est PLUS PETIT que ${nombre}`,
-&quot;indice&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-entree.value = &quot;&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-entree.focus();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-SAUVEGARDER LE SCORE DANS FIREBASE =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        async
-function sauvegarderScore(score) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            try {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(&quot;💾 Sauvegarde en cours...&quot;, &quot;loading&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-await db.collection(&quot;scores&quot;).add({</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-joueur: pseudoJoueur,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-score: score,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-nombreSecret: nombreSecret,</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-date: new Date(),</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-timestamp: firebase.firestore.FieldValue.serverTimestamp()</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                });</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(&quot;✅ Score sauvegardé !&quot;, &quot;victoire&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                //
-Recharger les scores</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-setTimeout(chargerScores, 500);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            } catch
-(error) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-console.error(&quot;Erreur sauvegarde :&quot;, error);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-afficherMessage(&quot;❌ Erreur sauvegarde&quot;, &quot;indice&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-CHARGER LES SCORES DEPUIS FIREBASE =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        async
-function chargerScores() {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            try {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-const snapshot = await db.collection(&quot;scores&quot;)</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-.orderBy(&quot;score&quot;)</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-.limit(10)</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-.get();</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-const container = document.getElementById(&quot;scoresContainer&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                if
-(snapshot.empty) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-container.innerHTML = '&lt;div class=&quot;no-scores&quot;&gt;Aucun
-score pour l\'instant. À toi de jouer ! 🎮&lt;/div&gt;';</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-return;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                let
-html = &quot;&quot;;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-snapshot.forEach((doc, index) =&gt; {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-const data = doc.data();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-html += `</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                    
-   &lt;div class=&quot;score-item&quot;&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                    
-       &lt;span class=&quot;score-joueur&quot;&gt;${index + 1}.
-${data.joueur}&lt;/span&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                    
-       &lt;span class=&quot;score-value&quot;&gt;${data.score}
-tentatives&lt;/span&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                    
-   &lt;/div&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-`;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                });</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-container.innerHTML = html;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            } catch
-(error) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-console.error(&quot;Erreur chargement :&quot;, error);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-document.getElementById(&quot;scoresContainer&quot;).innerHTML = 
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">                   
-'&lt;div class=&quot;no-scores&quot;&gt;Erreur de connexion à
-Firebase&lt;/div&gt;';</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-AFFICHER LES MESSAGES =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        function
-afficherMessage(texte, style) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            let
-messageElement = document.getElementById(&quot;leMessage&quot;);</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-messageElement.textContent = texte;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-messageElement.className = &quot;message &quot; + style;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-RECOMMENCER =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        function
-recommencer() {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-demarrer();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">           
-chargerScores();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        }</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // =====
-APPUYER SUR ENTRÉE =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-document.getElementById(&quot;monEntree&quot;).addEventListener(&quot;keypress&quot;,
-function(event) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            if
-(event.key === &quot;Enter&quot;) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-verifierReponse();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        });</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-document.getElementById(&quot;pseudoInput&quot;).addEventListener(&quot;keypress&quot;,
-function(event) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            if
-(event.key === &quot;Enter&quot;) {</p>
-<p style="line-height: 100%; margin-bottom: 0cm">               
-changerPseudo();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">            }</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        });</p>
-<p style="line-height: 100%; margin-bottom: 0cm"><br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        // ===== AU
-DÉMARRAGE =====</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-afficherPseudo();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">        demarrer();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">       
-chargerScores();</p>
-<p style="line-height: 100%; margin-bottom: 0cm">    &lt;/script&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">&lt;/body&gt;</p>
-<p style="line-height: 100%; margin-bottom: 0cm">&lt;/html&gt;</p>
+<body>
+    <div class="container">
+        <h1>🎮 Jeu de Devinettes</h1>
+        <p class="subtitle">Avec sauvegarde des scores ! 🔥</p>
+
+        <div class="pseudo-section">
+            <label style="color: #666; font-weight: bold;">Ton pseudo :</label>
+            <div class="pseudo-input-group">
+                <input 
+                    type="text" 
+                    id="pseudoInput" 
+                    placeholder="Entre ton pseudo..."
+                    maxlength="20"
+                >
+                <button onclick="changerPseudo()">OK</button>
+            </div>
+            <div class="pseudo-display" id="pseudoAffiche">Pseudo : (pas défini)</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-text">Je pense à un nombre entre <strong>1 et 100</strong></div>
+            <div class="info-text">À toi de le deviner ! 🤔</div>
+        </div>
+
+        <div class="input-group">
+            <input 
+                type="number" 
+                id="monEntree" 
+                min="1" 
+                max="100" 
+                placeholder="Écris un nombre..."
+            >
+            <button onclick="verifierReponse()">Vérifier</button>
+        </div>
+
+        <div class="message" id="leMessage"></div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Tentatives :</span>
+                <span class="stat-value" id="compteur">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">État :</span>
+                <span class="stat-value" id="etat">En jeu...</span>
+            </div>
+        </div>
+
+        <button class="bouton-reset" onclick="recommencer()">🔄 Nouveau Jeu</button>
+
+        <div class="scores-section">
+            <div class="scores-title">🏆 Meilleurs Scores</div>
+            <div id="scoresContainer" class="loading">Chargement des scores...</div>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+
+    <script>
+        // ===== CONFIGURATION FIREBASE =====
+        const firebaseConfig = {
+    apiKey: "AIzaSyBboj_Vc9VVkzzuWpc8pNrRyP82ZYst1Y",
+    authDomain: "devinet-8b270.firebaseapp.com",
+    projectId: "devinet-8b270",
+    storageBucket: "devinet-8b270.appspot.com",
+    messagingSenderId: "213768792856",
+    appId: "1:213768792856:web:5b570e34f4624aabaccc6d"
+};
+
+        // Initialiser Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+
+        // ===== LES VARIABLES =====
+        let nombreSecret;
+        let tentatives;
+        let jeuTermine;
+        let pseudoJoueur = localStorage.getItem("pseudoJoueur") || "Anonyme";
+
+        // ===== AFFICHER LE PSEUDO =====
+        function afficherPseudo() {
+            document.getElementById("pseudoAffiche").textContent = `Pseudo : ${pseudoJoueur}`;
+        }
+
+        // ===== CHANGER LE PSEUDO =====
+        function changerPseudo() {
+            const nouveau = document.getElementById("pseudoInput").value.trim();
+            if (nouveau && nouveau.length > 0) {
+                pseudoJoueur = nouveau;
+                localStorage.setItem("pseudoJoueur", pseudoJoueur);
+                afficherPseudo();
+                document.getElementById("pseudoInput").value = "";
+                chargerScores();
+            } else {
+                alert("Entre un pseudo valide !");
+            }
+        }
+
+        // ===== FONCTION DE DÉMARRAGE =====
+        function demarrer() {
+            nombreSecret = Math.floor(Math.random() * 100) + 1;
+            tentatives = 0;
+            jeuTermine = false;
+            
+            document.getElementById("leMessage").textContent = "";
+            document.getElementById("monEntree").value = "";
+            document.getElementById("etat").textContent = "En jeu...";
+            document.getElementById("compteur").textContent = "0";
+            document.getElementById("monEntree").focus();
+        }
+
+        // ===== VÉRIFIER LA RÉPONSE =====
+        function verifierReponse() {
+            if (jeuTermine) return;
+
+            let entree = document.getElementById("monEntree");
+            let nombre = parseInt(entree.value);
+
+            if (isNaN(nombre) || nombre < 1 || nombre > 100) {
+                afficherMessage("⚠️ Écris un nombre entre 1 et 100 !", "indice");
+                return;
+            }
+
+            tentatives++;
+            document.getElementById("compteur").textContent = tentatives;
+
+            if (nombre === nombreSecret) {
+                afficherMessage(
+                    `🎉 BRAVO ! Tu as trouvé ${nombreSecret} en ${tentatives} tentative(s) !`,
+                    "victoire"
+                );
+                document.getElementById("etat").textContent = "Gagné ! 🎉";
+                jeuTermine = true;
+                
+                // Sauvegarder le score dans Firebase
+                sauvegarderScore(tentatives);
+            } else if (nombre < nombreSecret) {
+                afficherMessage(`📈 Le nombre est PLUS GRAND que ${nombre}`, "indice");
+            } else {
+                afficherMessage(`📉 Le nombre est PLUS PETIT que ${nombre}`, "indice");
+            }
+
+            entree.value = "";
+            entree.focus();
+        }
+
+        // ===== SAUVEGARDER LE SCORE DANS FIREBASE =====
+        async function sauvegarderScore(score) {
+            try {
+                afficherMessage("💾 Sauvegarde en cours...", "loading");
+                
+                await db.collection("scores").add({
+                    joueur: pseudoJoueur,
+                    score: score,
+                    nombreSecret: nombreSecret,
+                    date: new Date(),
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                afficherMessage("✅ Score sauvegardé !", "victoire");
+                
+                // Recharger les scores
+                setTimeout(chargerScores, 500);
+            } catch (error) {
+                console.error("Erreur sauvegarde :", error);
+                afficherMessage("❌ Erreur sauvegarde", "indice");
+            }
+        }
+
+        // ===== CHARGER LES SCORES DEPUIS FIREBASE =====
+        async function chargerScores() {
+            try {
+                const snapshot = await db.collection("scores")
+                    .orderBy("score")
+                    .limit(10)
+                    .get();
+
+                const container = document.getElementById("scoresContainer");
+
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="no-scores">Aucun score pour l\'instant. À toi de jouer ! 🎮</div>';
+                    return;
+                }
+
+                let html = "";
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    html += `
+                        <div class="score-item">
+                            <span class="score-joueur">${index + 1}. ${data.joueur}</span>
+                            <span class="score-value">${data.score} tentatives</span>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error("Erreur chargement :", error);
+                document.getElementById("scoresContainer").innerHTML = 
+                    '<div class="no-scores">Erreur de connexion à Firebase</div>';
+            }
+        }
+
+        // ===== AFFICHER LES MESSAGES =====
+        function afficherMessage(texte, style) {
+            let messageElement = document.getElementById("leMessage");
+            messageElement.textContent = texte;
+            messageElement.className = "message " + style;
+        }
+
+        // ===== RECOMMENCER =====
+        function recommencer() {
+            demarrer();
+            chargerScores();
+        }
+
+        // ===== APPUYER SUR ENTRÉE =====
+        document.getElementById("monEntree").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                verifierReponse();
+            }
+        });
+
+        document.getElementById("pseudoInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                changerPseudo();
+            }
+        });
+
+        // ===== AU DÉMARRAGE =====
+        afficherPseudo();
+        demarrer();
+        chargerScores();
+    </script>
 </body>
 </html>
