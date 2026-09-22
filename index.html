@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Jeu de Devinettes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-text {
+            color: #333;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #764ba2;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .message.indice {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .message.victoire {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 2px solid #dee2e6;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .bouton-reset {
+            background: #28a745;
+            margin-top: 20px;
+        }
+
+        .bouton-reset:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Jeu de Devinettes</h1>
+        <p class="subtitle">Peux-tu deviner le nombre ?</p>
+
+        <div class="info-box">
+            <div class="info-text">Je pense à un nombre entre <strong>1 et 100</strong></div>
+            <div class="info-text">À toi de le deviner ! 🤔</div>
+        </div>
+
+        <div class="input-group">
+            <input 
+                type="number" 
+                id="monEntree" 
+                min="1" 
+                max="100" 
+                placeholder="Écris un nombre..."
+            >
+            <button onclick="verifierReponse()">Vérifier</button>
+        </div>
+
+        <div class="message" id="leMessage"></div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Tentatives :</span>
+                <span class="stat-value" id="compteur">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">État :</span>
+                <span class="stat-value" id="etat">En jeu...</span>
+            </div>
+        </div>
+
+        <button class="bouton-reset" onclick="recommencer()">🔄 Nouveau Jeu</button>
+    </div>
+
+    <script>
+        // ===== LES VARIABLES =====
+        // Une variable, c'est une "boîte" où on range une information
+        
+        let nombreSecret; // Le nombre que l'ordinateur pense
+        let tentatives;   // Combien de fois l'utilisateur a essayé
+        let jeuTermine;   // Est-ce que le jeu est fini ?
+
+        // ===== LA FONCTION DE DÉMARRAGE =====
+        // Une fonction, c'est un ensemble d'instructions qu'on peut réutiliser
+        
+        function demarrer() {
+            // Math.random() = nombre aléatoire entre 0 et 1
+            // * 100 = le multiplie par 100 (0 à 100)
+            // Math.floor() = enlève les décimales
+            // + 1 = pour avoir entre 1 et 100 (pas 0)
+            nombreSecret = Math.floor(Math.random() * 100) + 1;
+            
+            tentatives = 0;      // On commence à 0 tentatives
+            jeuTermine = false;  // Le jeu n'est pas fini
+            
+            document.getElementById("leMessage").textContent = "";
+            document.getElementById("monEntree").value = "";
+            document.getElementById("etat").textContent = "En jeu...";
+            document.getElementById("compteur").textContent = "0";
+            document.getElementById("monEntree").focus();
+        }
+
+        // ===== FONCTION PRINCIPALE : VÉRIFIER LA RÉPONSE =====
+        
+        function verifierReponse() {
+            // Si le jeu est fini, on ne fait rien
+            if (jeuTermine) return;
+
+            // On récupère ce que l'utilisateur a écrit
+            let entree = document.getElementById("monEntree");
+            let nombre = parseInt(entree.value);
+
+            // On vérifie si c'est un nombre valide
+            if (isNaN(nombre) || nombre < 1 || nombre > 100) {
+                afficherMessage("⚠️ Écris un nombre entre 1 et 100 !", "indice");
+                return;
+            }
+
+            // On augmente le compteur de tentatives
+            tentatives++;
+            document.getElementById("compteur").textContent = tentatives;
+
+            // ===== LA LOGIQUE DU JEU =====
+            if (nombre === nombreSecret) {
+                // ✅ LE JOUEUR A TROUVÉ !
+                afficherMessage(
+                    `🎉 BRAVO ! Tu as trouvé ${nombreSecret} en ${tentatives} tentative(s) !`,
+                    "victoire"
+                );
+                document.getElementById("etat").textContent = "Gagné ! 🎉";
+                jeuTermine = true;
+            } else if (nombre < nombreSecret) {
+                // 📈 Le nombre est trop petit
+                afficherMessage(`📈 Le nombre est PLUS GRAND que ${nombre}`, "indice");
+            } else {
+                // 📉 Le nombre est trop grand
+                afficherMessage(`📉 Le nombre est PLUS PETIT que ${nombre}`, "indice");
+            }
+
+            // On vide le champ d'entrée et on remet le focus
+            entree.value = "";
+            entree.focus();
+        }
+
+        // ===== FONCTION POUR AFFICHER LES MESSAGES =====
+        
+        function afficherMessage(texte, style) {
+            let messageElement = document.getElementById("leMessage");
+            messageElement.textContent = texte;
+            messageElement.className = "message " + style;
+        }
+
+        // ===== FONCTION POUR RECOMMENCER =====
+        
+        function recommencer() {
+            demarrer();
+        }
+
+        // ===== AUTORISER APPUYER SUR ENTRÉE =====
+        // Quand on appuie sur la touche Entrée, ça envoie la réponse
+        
+        document.getElementById("monEntree").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                verifierReponse();
+            }
+        });
+
+        // ===== AU DÉMARRAGE DE LA PAGE =====
+        demarrer();
+    </script>
+</body>
+</html>
